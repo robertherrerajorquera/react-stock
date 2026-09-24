@@ -43,6 +43,13 @@ const createInitialWindows = (): WindowsState => ({
     zIndex: 0,
     ...initialPos("help"),
   },
+  explorer: {
+    open: false,
+    minimized: false,
+    maximized: false,
+    zIndex: 0,
+    ...initialPos("explorer"),
+  },
 });
 
 export default function WindowProvider({ children }: WindowProviderProps) {

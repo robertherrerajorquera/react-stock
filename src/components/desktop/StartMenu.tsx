@@ -6,6 +6,7 @@ interface StartMenuProps {
 }
 
 const menuItems: { id: WindowId; icon: string; label: string }[] = [
+  { id: "explorer", icon: "🗂️", label: "Explorador de lecciones" },
   { id: "tutorial", icon: "📖", label: "React Tutorial" },
   { id: "code", icon: "💻", label: "Code Editor" },
   { id: "stock", icon: "📦", label: "Stock Manager" },

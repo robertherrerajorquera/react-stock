@@ -5,6 +5,7 @@ import TutorialWindow from "../tutorial/TutorialWindow";
 import CodeEditorWindow from "../code/CodeEditorWindow";
 import StockWindow from "../stock/StockWindow";
 import HelpWindow from "../help/HelpWindow";
+import ExplorerWindow from "../explorer/ExplorerWindow";
 import { useWindowManager } from "../../hooks/useWindowManager";
 import { windowOrder } from "../../data/windows";
 import type { WindowId } from "../../context/WindowContext";
@@ -39,6 +40,13 @@ export default function WindowManager({
         return <StockWindow />;
       case "help":
         return <HelpWindow />;
+      case "explorer":
+        return (
+          <ExplorerWindow
+            lessonIndex={lessonIndex}
+            onLessonChange={onLessonChange}
+          />
+        );
       default:
         return null;
     }

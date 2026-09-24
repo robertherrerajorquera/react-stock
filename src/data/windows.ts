@@ -9,7 +9,13 @@ export interface WindowMeta {
   height: number;
 }
 
-export const windowOrder: WindowId[] = ["tutorial", "code", "stock", "help"];
+export const windowOrder: WindowId[] = [
+  "tutorial",
+  "code",
+  "stock",
+  "help",
+  "explorer",
+];
 
 export const windowMeta: Record<WindowId, WindowMeta> = {
   tutorial: {
@@ -43,6 +49,14 @@ export const windowMeta: Record<WindowId, WindowMeta> = {
     y: 60,
     width: 400,
     height: 280,
+  },
+  explorer: {
+    title: "Explorador de lecciones",
+    icon: "🗂️",
+    x: 720,
+    y: 48,
+    width: 280,
+    height: 430,
   },
 };
 

@@ -1,6 +1,11 @@
 import { createContext } from "react";
 
-export type WindowId = "tutorial" | "code" | "stock" | "help";
+export type WindowId =
+  | "tutorial"
+  | "code"
+  | "stock"
+  | "help"
+  | "explorer";
 
 export interface WindowState {
   open: boolean;

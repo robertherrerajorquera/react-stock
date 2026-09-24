@@ -30,16 +30,18 @@ export interface LessonData {
 export const lessons: LessonData[] = [
   {
     id: "jsx",
-    title: "JSX",
+    title: "JSX y TSX",
     category: "Fundamentos",
     concept:
-      "JSX es una extensión de sintaxis que permite escribir estructuras parecidas a HTML dentro de JavaScript. React transforma cada elemento JSX en una llamada a función que crea un elemento de la interfaz.",
+      "JSX es una extensión de sintaxis que permite escribir estructuras parecidas a HTML dentro de JavaScript. React transforma cada elemento JSX en una llamada a función que crea un elemento de la interfaz. Este proyecto usa TSX: JSX dentro de archivos TypeScript (.tsx), así que cada ejemplo puede llevar anotaciones de tipos.",
     problem:
       "Sin JSX, describir una interfaz obligaría a construir árboles de objetos o llamadas anidadas a funciones. El código se vuelve difícil de leer y difícil de comparar con lo que verá el usuario.",
     syntax: `const etiqueta = <h1>Hola</h1>;
 const dinamico = <p>Stock: {stock}</p>;
-// Las llaves {} abren una expresión JavaScript`,
-    example: `function Product() {
+// Las llaves {} abren una expresión JavaScript
+// TSX = JSX + TypeScript: vive en archivos .tsx`,
+    example: `// archivo: Product.tsx
+function Product() {
   return (
     <div>
       <h2>Teclado</h2>
@@ -48,16 +50,20 @@ const dinamico = <p>Stock: {stock}</p>;
   );
 }`,
     application:
-      "Cada fila del Stock Manager (Teclado, Mouse, Monitor) nace de JSX. La tabla, los botones y la barra de estado son elementos JSX renderizados por React.",
+      "Cada fila del Stock Manager (Teclado, Mouse, Monitor) nace de JSX escrito en archivos .tsx. La tabla, los botones y la barra de estado son elementos JSX renderizados por React.",
     result: {
       window: "stock",
       action: "Ver en Stock Manager",
       description:
-        "Abre el Stock Manager y observa la fila Teclado | 10. Ese HTML fue escrito con JSX.",
+        "Abre el Stock Manager y observa la fila Teclado | 10. Ese HTML fue escrito con JSX en un archivo .tsx.",
       note: "Las llaves {} del JSX permiten insertar valores: {product.name} se convierte en el texto que ves en la tabla.",
     },
     codeFile: "src/components/stock/ProductRow.tsx",
-    code: `function ProductRow({ product }) {
+    code: `interface ProductRowProps {
+  product: Product;
+}
+
+function ProductRow({ product }: ProductRowProps) {
   return (
     <tr>
       <td>{String(product.id).padStart(2, "0")}</td>
@@ -72,16 +78,17 @@ const dinamico = <p>Stock: {stock}</p>;
     title: "Componentes",
     category: "Fundamentos",
     concept:
-      "Un componente es una función de JavaScript que devuelve JSX y representa una pieza reutilizable de la interfaz. Se usa como una etiqueta: <NombreComponente />.",
+      "Un componente es una función que devuelve JSX y representa una pieza reutilizable de la interfaz. Se usa como una etiqueta: <NombreComponente />. En este proyecto las funciones viven en archivos .tsx y pueden llevar tipos de TypeScript.",
     problem:
       "Sin componentes, la interfaz se escribe en un único bloque gigante. Duplicar filas, tablas o formularios a mano es propenso a errores y casi imposible de mantener.",
     syntax: `function Saludo() {
   return <p>Hola</p>;
 }
 
-// Uso:
+// Uso (en cualquier archivo .tsx):
 <Saludo />`,
-    example: `function ProductRow() {
+    example: `// archivo: ProductRow.tsx
+export default function ProductRow() {
   return (
     <tr>
       <td>Teclado</td>
@@ -99,7 +106,17 @@ const dinamico = <p>Stock: {stock}</p>;
       note: "Que algo sea componente no lo mejora automáticamente: se divide para organizar y reutilizar, no por costumbre.",
     },
     codeFile: "src/components/stock/ProductRow.tsx",
-    code: `export default function ProductRow({ product, selected, onSelect }) {
+    code: `interface ProductRowProps {
+  product: Product;
+  selected: boolean;
+  onSelect: (id: number) => void;
+}
+
+export default function ProductRow({
+  product,
+  selected,
+  onSelect,
+}: ProductRowProps) {
   return (
     <tr onClick={() => onSelect(product.id)}>
       <td>{product.name}</td>
@@ -113,19 +130,27 @@ const dinamico = <p>Stock: {stock}</p>;
     title: "Props",
     category: "Fundamentos",
     concept:
-      "Las props son la información que un componente padre le pasa a un componente hijo. Son el argumento de la etiqueta JSX y el hijo no las modifica: las recibe y las dibuja.",
+      "Las props son la información que un componente padre le pasa a un componente hijo. Son el argumento de la etiqueta JSX y el hijo no las modifica: las recibe y las dibuja. Con TypeScript se declaran en una interface que el componente exige.",
     problem:
       "Un componente sin props queda escrito a mano para un dato concreto: mostraría siempre 'Teclado' y habría que copiarlo para Mouse y Monitor.",
     syntax: `<ProductRow product={product} />
 
-function ProductRow({ product }) {
+interface ProductRowProps {
+  product: Product;
+}
+
+function ProductRow({ product }: ProductRowProps) {
   return <td>{product.name}</td>;
 }`,
     example: `// Padre
 <ProductRow product={{ name: "Mouse", stock: 5 }} />
 
-// Hijo
-function ProductRow({ product }) {
+// Hijo (archivo .tsx)
+interface ProductRowProps {
+  product: Product;
+}
+
+function ProductRow({ product }: ProductRowProps) {
   return <tr><td>{product.name}</td></tr>;
 }`,
     application:
@@ -138,7 +163,7 @@ function ProductRow({ product }) {
       note: "Las props fluyen en una sola dirección: de padre a hijo. Un hijo nunca debe escribir las props que recibió.",
     },
     codeFile: "src/components/stock/ProductTable.tsx",
-    code: `{products.map((product) => (
+    code: `{products.map((product: Product) => (
   <ProductRow
     key={product.id}
     product={product}
@@ -155,12 +180,13 @@ function ProductRow({ product }) {
       "useState permite que un componente recuerde información entre renders y la actualice. Devuelve el valor actual y una función para cambiarlo; al cambiarlo, React vuelve a renderizar el componente.",
     problem:
       "Las variables normales se reinician en cada render. Sin estado, la interfaz nunca cambiaría por sí misma: cada actualización se perdería en el siguiente render.",
-    syntax: `const [stock, setStock] = useState(10);
+    syntax: `const [stock, setStock] = useState<number>(10);
 
 // stock     → valor actual (10)
-// setStock  → función que actualiza el estado`,
+// setStock  → función que actualiza el estado
+// <number>  → tipo del estado (TypeScript)`,
     example: `function Contador() {
-  const [stock, setStock] = useState(10);
+  const [stock, setStock] = useState<number>(10);
 
   return (
     <button onClick={() => setStock(stock + 1)}>
@@ -179,7 +205,7 @@ function ProductRow({ product }) {
     },
     codeFile: "src/components/stock/ProductRow.tsx",
     code: `// Versión de la etapa: estado local con useState
-const [stock, setStock] = useState(product.stock);
+const [stock, setStock] = useState<number>(product.stock);
 
 <button onClick={() => setStock(stock + 1)}>+</button>
 <button onClick={() => setStock(stock - 1)}>-</button>
@@ -197,10 +223,13 @@ const [stock, setStock] = useState(product.stock);
     problem:
       "Sin eventos, la interfaz es decorativa: se puede mirar, pero no se puede usar. Nada responde a lo que hace la persona.",
     syntax: `<button onClick={handleAdd}>Agregar</button>
-<input onChange={(e) => setName(e.target.value)} />
-<form onSubmit={handleSubmit}>...</form>`,
+<input onChange={(event) => setName(event.target.value)} />
+<form onSubmit={handleSubmit}>...</form>
+
+// Tipado opcional (TSX):
+// (event: ChangeEvent<HTMLInputElement>) => void`,
     example: `function Boton() {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = useState<number>(0);
 
   return (
     <button onClick={() => setCount(count + 1)}>
@@ -232,7 +261,7 @@ const [stock, setStock] = useState(product.stock);
       "Los datos llegan como arrays y React los convierte en elementos con .map(). Cada elemento necesita una key única (normalmente el id) para que React identifique qué fila cambió.",
     problem:
       "Escribir cada fila a mano obliga a duplicar JSX por cada producto y no escala: añadir un producto obligaría a editar la tabla a mano.",
-    syntax: `products.map((product) => (
+    syntax: `products.map((product: Product) => (
   <ProductRow
     key={product.id}
     product={product}
@@ -240,7 +269,7 @@ const [stock, setStock] = useState(product.stock);
 ))`,
     example: `const nombres = ["Teclado", "Mouse", "Monitor"];
 
-nombres.map((nombre, i) => (
+nombres.map((nombre: string, i: number) => (
   <li key={i}>{nombre}</li>
 ))`,
     application:
@@ -273,22 +302,28 @@ nombres.map((nombre, i) => (
     syntax: `<form onSubmit={handleSubmit}>
   <input
     value={name}
-    onChange={(e) => setName(e.target.value)}
+    onChange={(event) => setName(event.target.value)}
   />
   <button type="submit">Agregar</button>
-</form>`,
-    example: `function Form() {
-  const [name, setName] = useState("");
+</form>
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+// Tipado del envío (TSX):
+const handleSubmit = (event: FormEvent) => { ... }`,
+    example: `function Form() {
+  const [name, setName] = useState<string>("");
+
+  const handleSubmit = (event: FormEvent) => {
+    event.preventDefault();
     console.log(name);
     setName("");
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input value={name} onChange={(e) => setName(e.target.value)} />
+      <input
+        value={name}
+        onChange={(event) => setName(event.target.value)}
+      />
       <button type="submit">Enviar</button>
     </form>
   );
@@ -303,10 +338,10 @@ nombres.map((nombre, i) => (
       note: "e.preventDefault() evita que la página se recargue al enviar el formulario.",
     },
     codeFile: "src/components/stock/ProductForm.tsx",
-    code: `const [name, setName] = useState("");
-const [stock, setStock] = useState("");
+    code: `const [name, setName] = useState<string>("");
+const [stock, setStock] = useState<string>("");
 
-const handleSubmit = (event) => {
+const handleSubmit = (event: FormEvent) => {
   event.preventDefault();
   dispatch({
     type: "ADD_PRODUCT",
@@ -354,31 +389,32 @@ const handleSubmit = (event) => {
     problem:
       "Si ProductRow necesita products, la información debe atravesar StockWindow → ProductTable → ProductRow. Cada nivel se acopla a datos que no le competen y el código se vuelve ruidoso.",
     syntax: `App
- │ products
+ │ lessonIndex
  ▼
-StockPage
- │ products
+WindowManager
+ │ lessonIndex
  ▼
-ProductTable
- │ products
+TutorialWindow / CodeEditorWindow
+ │ lessonIndex
  ▼
-ProductRow   ← la única que lo usa`,
-    example: `// StockPage no usa products, pero debe pasarlo
-function StockPage({ products }) {
-  return <ProductTable products={products} />;
+Lección actual   ← la única que lo usa`,
+    example: `// WindowManager no usa lessonIndex, pero debe pasarlo
+interface WindowManagerProps {
+  lessonIndex: number;
+  onLessonChange: (index: number) => void;
 }`,
     application:
-      "En este proyecto el fenómeno se ve con la lección actual: Desktop guarda el índice de la lección y se lo pasa por props a WindowManager para que llegue a TutorialWindow y CodeEditorWindow.",
+      "En este proyecto el fenómeno se ve con la lección actual: Desktop guarda el índice de la lección y se lo pasa por props a WindowManager para que llegue a TutorialWindow, CodeEditorWindow y ExplorerWindow.",
     result: {
       window: "tutorial",
       action: "Ver la cadena de props",
       description:
-        "La lección cambia desde el menú Curso o desde la ventana Tutorial, pero el dato recorre Desktop → WindowManager → TutorialWindow.",
+        "La lección cambia desde el menú Curso, el Explorador o la ventana Tutorial, pero el dato recorre Desktop → WindowManager → cada ventana.",
       note: "Prop drilling no es un pecado: es válido cuando pocos componentes lo atraviesan. El problema aparece cuando muchos componentes no usan la información que transmiten.",
     },
     codeFile: "src/components/windows/WindowManager.tsx",
     code: `// Desktop (dueño del estado)
-const [lessonIndex, setLessonIndex] = useState(0);
+const [lessonIndex, setLessonIndex] = useState<number>(0);
 
 <WindowManager
   lessonIndex={lessonIndex}
@@ -399,10 +435,10 @@ const [lessonIndex, setLessonIndex] = useState(0);
       "Context permite compartir información con todos los componentes descendientes sin pasar props manualmente por cada nivel. Se crea con createContext y se entrega con un Provider.",
     problem:
       "Para evitar el prop drilling haría falta modificar cada nivel intermedio cada vez que cambia la información compartida.",
-    syntax: `const StockContext = createContext();
+    syntax: `const StockContext = createContext<StockValue | null>(null);
 
-function StockProvider({ children }) {
-  const [products, setProducts] = useState([]);
+function StockProvider({ children }: { children: ReactNode }) {
+  const [products, setProducts] = useState<Product[]>([]);
   return (
     <StockContext.Provider value={{ products }}>
       {children}
@@ -427,10 +463,11 @@ function App() {
         "Este botón ejecuta openWindow('stock') desde el propio tutorial: el tutorial está recibiendo WindowContext, igual que el resto de la aplicación.",
       note: "El escritorio que estás usando ahora es un ejemplo real de Context: sin WindowContext, habría que pasar openWindow por props hasta cada ventana.",
     },
-    codeFile: "src/context/WindowContext.ts",
-    code: `const WindowContext = createContext<WindowContextValue | null>(null);
+    codeFile: "src/context/WindowProvider.tsx",
+    code: `// WindowContext.ts — el tipo del valor y el contexto
+const WindowContext = createContext<WindowContextValue | null>(null);
 
-// En WindowProvider
+// WindowProvider.tsx — el Provider entrega el valor
 <WindowContext.Provider
   value={{
     windows,
@@ -493,10 +530,10 @@ export default function StockSummary() {
       "El Provider no solo comparte datos: puede guardar el estado y exponer las funciones que lo modifican. Así el estado compartido vive en un único lugar y todos consumen la misma fuente.",
     problem:
       "Si cada ventana guardara su propia copia de los productos, se desincronizarían: el formulario agregaría a su lista y la tabla vería otra.",
-    syntax: `function StockProvider({ children }) {
-  const [products, setProducts] = useState([]);
+    syntax: `function StockProvider({ children }: { children: ReactNode }) {
+  const [products, setProducts] = useState<Product[]>([]);
 
-  const addProduct = (product) =>
+  const addProduct = (product: Product) =>
     setProducts((current) => [...current, product]);
 
   return (
@@ -541,7 +578,11 @@ dispatch({
   type: "ADD_PRODUCT",
   payload: product
 });`,
-    example: `function reducer(state, action) {
+    example: `interface State {
+  count: number;
+}
+
+function reducer(state: State, action: Action) {
   switch (action.type) {
     case "increment":
       return { ...state, count: state.count + 1 };
@@ -598,7 +639,7 @@ dispatch({
       "La combinación final: el Provider guarda el resultado de useReducer y expone { state, dispatch } a todo el árbol. Estado compartido y transiciones centralizadas en un solo lugar.",
     problem:
       "Con muchas ventanas y operaciones, el estado repartido y los setters dispersos producen inconsistencias y bugs difíciles de rastrear.",
-    syntax: `function StockProvider({ children }) {
+    syntax: `function StockProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(
     stockReducer,
     initialState
@@ -627,7 +668,7 @@ dispatch({
       note: "Context no reemplaza a las props: se usa cuando una información necesita ser compartida por distintas partes del árbol.",
     },
     codeFile: "src/App.tsx",
-    code: `function App() {
+    code: `export default function App() {
   return (
     <WindowProvider>
       <StockProvider>
