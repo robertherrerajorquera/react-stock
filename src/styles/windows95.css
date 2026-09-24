@@ -100,6 +100,17 @@
     outline-offset: -4px;
   }
 
+  .win95-button--small {
+    padding: 0 6px;
+    min-height: 18px;
+    min-width: 22px;
+    font-weight: bold;
+  }
+
+  .win95-button--small:active {
+    padding: 1px 5px 0 7px;
+  }
+
   .win95-button:disabled {
     color: var(--win-dark-gray);
     text-shadow: 1px 1px 0 var(--win-white);
@@ -125,10 +136,72 @@
 
   .win95-desktop {
     position: relative;
+    z-index: 0;
     flex: 1;
     min-height: 0;
     background: var(--win-desktop);
     overflow: hidden;
+  }
+
+  /* ---------- Marco de la aplicación ---------- */
+
+  .win95-app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    background: var(--win-gray);
+  }
+
+  /* ---------- Barra de menús ---------- */
+
+  .win95-menubar {
+    position: relative;
+    display: flex;
+    gap: 2px;
+    padding: 2px 4px;
+    background: var(--win-gray);
+    user-select: none;
+  }
+
+  .win95-menubar--app {
+    z-index: 9995;
+  }
+
+  .win95-menubar__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+  }
+
+  .win95-menubar__menu {
+    position: relative;
+  }
+
+  .win95-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 2;
+    min-width: 200px;
+    padding: 2px;
+    background: var(--win-gray);
+    border: 1px solid;
+    border-color: var(--win-white) var(--win-black) var(--win-black)
+      var(--win-white);
+    box-shadow: inset -1px -1px var(--win-dark-gray), inset 1px 1px
+        var(--win-light), 2px 2px 0 rgba(0, 0, 0, 0.4);
+  }
+
+  .win95-menu-item:disabled {
+    color: var(--win-dark-gray);
+    text-shadow: 1px 1px 0 var(--win-white);
+    background: transparent;
+  }
+
+  .win95-menu-item:disabled:hover {
+    background: transparent;
+    color: var(--win-dark-gray);
   }
 
   .win95-desktop-icon {
@@ -183,8 +256,10 @@
     box-shadow: inset -1px -1px var(--win-dark-gray), inset 1px 1px
         var(--win-light);
     padding: 3px;
-    min-width: 220px;
-    min-height: 140px;
+    min-width: min(220px, calc(100vw - 8px));
+    min-height: min(140px, calc(100vh - 80px));
+    max-width: calc(100vw - 8px);
+    max-height: calc(100vh - 80px);
     transition:
       width 0.15s ease-out,
       height 0.15s ease-out;
@@ -193,6 +268,8 @@
   .win95-window--maximized {
     width: 100% !important;
     height: 100% !important;
+    max-width: none;
+    max-height: none;
   }
 
   /* ---------- Barra de título ---------- */
@@ -315,7 +392,7 @@
 
   .win95-taskbar {
     position: relative;
-    z-index: 9999;
+    z-index: 9990;
     display: flex;
     align-items: center;
     gap: 3px;
@@ -385,6 +462,12 @@
   .win95-task-button span {
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  @media (max-width: 720px) {
+    .win95-task-button {
+      min-width: 78px;
+    }
   }
 
   .win95-taskbar__clock {
@@ -486,5 +569,50 @@
     border: 1px solid;
     border-color: var(--win-dark-gray) var(--win-white) var(--win-white)
       var(--win-dark-gray);
+  }
+
+  /* ---------- Tabla de productos ---------- */
+
+  .win95-row {
+    background: var(--win-white);
+    cursor: default;
+  }
+
+  .win95-row[data-selected="true"] {
+    background: var(--win-blue);
+    color: var(--win-white);
+  }
+
+  .win95-row[data-selected="true"] .win95-row__status {
+    color: var(--win-white);
+  }
+
+  .win95-status--low {
+    color: var(--win-error);
+    font-weight: bold;
+  }
+
+  /* ---------- Alertas ---------- */
+
+  .win95-warning {
+    background: var(--win-warning);
+    color: var(--win-black);
+    border: 1px solid var(--win-black);
+    padding: 4px 6px;
+    font-size: 11px;
+  }
+
+  /* ---------- Progreso clásico ---------- */
+
+  .win95-progress {
+    font-family: var(--win-font-mono);
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--win-black);
+    background: var(--win-white);
+    border: 1px solid;
+    border-color: var(--win-dark-gray) var(--win-white) var(--win-white)
+      var(--win-dark-gray);
+    padding: 1px 4px;
   }
 }

@@ -1,8 +1,8 @@
 import { useRef, type PointerEvent as ReactPointerEvent, type ReactNode } from "react";
-import { motion, useDragControls } from "motion/react";
+import { motion, useDragControls, type PanInfo } from "motion/react";
 import WindowTitleBar from "./WindowTitleBar";
 import { useWindowManager } from "../../hooks/useWindowManager";
-import { windowMeta } from "../../data/windows";
+import { clampDragPosition, windowMeta } from "../../data/windows";
 import type { WindowId } from "../../context/WindowContext";
 
 interface WindowProps {
@@ -46,6 +46,15 @@ export default function Window({ id, children }: WindowProps) {
     }
   };
 
+  const handleDragEnd = (_: unknown, info: PanInfo) => {
+    const pos = clampDragPosition(
+      meta,
+      dragStart.current.x + info.offset.x,
+      dragStart.current.y + info.offset.y
+    );
+    moveWindow(id, pos.x, pos.y);
+  };
+
   return (
     <motion.div
       className={
@@ -72,13 +81,7 @@ export default function Window({ id, children }: WindowProps) {
       dragControls={dragControls}
       dragMomentum={false}
       dragElastic={0}
-      onDragEnd={(_, info) =>
-        moveWindow(
-          id,
-          dragStart.current.x + info.offset.x,
-          dragStart.current.y + info.offset.y
-        )
-      }
+      onDragEnd={handleDragEnd}
       onPointerDown={() => {
         if (!isActive) focusWindow(id);
       }}

@@ -5,11 +5,14 @@ import {
   type WindowState,
   type WindowsState,
 } from "./WindowContext";
-import { windowMeta } from "../data/windows";
+import { clampOpenPosition, windowMeta } from "../data/windows";
 
 interface WindowProviderProps {
   children: ReactNode;
 }
+
+const initialPos = (id: WindowId): { x: number; y: number } =>
+  clampOpenPosition(windowMeta[id], windowMeta[id].x, windowMeta[id].y);
 
 const createInitialWindows = (): WindowsState => ({
   tutorial: {
@@ -17,32 +20,28 @@ const createInitialWindows = (): WindowsState => ({
     minimized: false,
     maximized: false,
     zIndex: 1,
-    x: windowMeta.tutorial.x,
-    y: windowMeta.tutorial.y,
+    ...initialPos("tutorial"),
   },
   code: {
     open: false,
     minimized: false,
     maximized: false,
     zIndex: 0,
-    x: windowMeta.code.x,
-    y: windowMeta.code.y,
+    ...initialPos("code"),
   },
   stock: {
     open: false,
     minimized: false,
     maximized: false,
     zIndex: 0,
-    x: windowMeta.stock.x,
-    y: windowMeta.stock.y,
+    ...initialPos("stock"),
   },
   help: {
     open: false,
     minimized: false,
     maximized: false,
     zIndex: 0,
-    x: windowMeta.help.x,
-    y: windowMeta.help.y,
+    ...initialPos("help"),
   },
 });
 
@@ -65,7 +64,14 @@ export default function WindowProvider({ children }: WindowProviderProps) {
 
   const openWindow = (id: WindowId) => {
     zCounter.current += 1;
-    patchWindow(id, { open: true, minimized: false, zIndex: zCounter.current });
+    const zIndex = zCounter.current;
+    setWindows((current) => {
+      const pos = clampOpenPosition(windowMeta[id], current[id].x, current[id].y);
+      return {
+        ...current,
+        [id]: { ...current[id], open: true, minimized: false, zIndex, ...pos },
+      };
+    });
   };
 
   const closeWindow = (id: WindowId) => {

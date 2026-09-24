@@ -9,27 +9,40 @@ import { useWindowManager } from "../../hooks/useWindowManager";
 import { windowOrder } from "../../data/windows";
 import type { WindowId } from "../../context/WindowContext";
 
-const renderContent = (id: WindowId): ReactNode => {
-  switch (id) {
-    case "tutorial":
-      return <TutorialWindow />;
-    case "code":
-      return <CodeEditorWindow />;
-    case "stock":
-      return <StockWindow />;
-    case "help":
-      return <HelpWindow />;
-    default:
-      return null;
-  }
-};
+interface WindowManagerProps {
+  lessonIndex: number;
+  onLessonChange: (index: number) => void;
+}
 
-export default function WindowManager() {
+export default function WindowManager({
+  lessonIndex,
+  onLessonChange,
+}: WindowManagerProps) {
   const { windows } = useWindowManager();
 
   const visible = windowOrder.filter(
     (id) => windows[id].open && !windows[id].minimized
   );
+
+  const renderContent = (id: WindowId): ReactNode => {
+    switch (id) {
+      case "tutorial":
+        return (
+          <TutorialWindow
+            lessonIndex={lessonIndex}
+            onLessonChange={onLessonChange}
+          />
+        );
+      case "code":
+        return <CodeEditorWindow lessonIndex={lessonIndex} />;
+      case "stock":
+        return <StockWindow />;
+      case "help":
+        return <HelpWindow />;
+      default:
+        return null;
+    }
+  };
 
   return (
     <AnimatePresence>
