@@ -78,6 +78,7 @@ export default function Taskbar() {
             type="button"
             className="win95-button win95-task-button"
             data-active={isActive}
+            data-window-btn={id}
             onClick={() => handleTaskClick(id)}
           >
             <span>{meta.icon}</span>

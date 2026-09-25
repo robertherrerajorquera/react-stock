@@ -5,7 +5,11 @@ import {
   type WindowState,
   type WindowsState,
 } from "./WindowContext";
-import { clampOpenPosition, windowMeta } from "../data/windows";
+import {
+  clampOpenPosition,
+  initialSize,
+  windowMeta,
+} from "../data/windows";
 
 interface WindowProviderProps {
   children: ReactNode;
@@ -14,42 +18,24 @@ interface WindowProviderProps {
 const initialPos = (id: WindowId): { x: number; y: number } =>
   clampOpenPosition(windowMeta[id], windowMeta[id].x, windowMeta[id].y);
 
+const isNarrowScreen = (): boolean =>
+  typeof window !== "undefined" && window.innerWidth <= 600;
+
+const initialState = (id: WindowId, open: boolean, zIndex: number) => ({
+  open,
+  minimized: false,
+  maximized: open && isNarrowScreen(),
+  zIndex,
+  ...initialPos(id),
+  ...initialSize(windowMeta[id]),
+});
+
 const createInitialWindows = (): WindowsState => ({
-  tutorial: {
-    open: true,
-    minimized: false,
-    maximized: false,
-    zIndex: 1,
-    ...initialPos("tutorial"),
-  },
-  code: {
-    open: false,
-    minimized: false,
-    maximized: false,
-    zIndex: 0,
-    ...initialPos("code"),
-  },
-  stock: {
-    open: false,
-    minimized: false,
-    maximized: false,
-    zIndex: 0,
-    ...initialPos("stock"),
-  },
-  help: {
-    open: false,
-    minimized: false,
-    maximized: false,
-    zIndex: 0,
-    ...initialPos("help"),
-  },
-  explorer: {
-    open: false,
-    minimized: false,
-    maximized: false,
-    zIndex: 0,
-    ...initialPos("explorer"),
-  },
+  tutorial: initialState("tutorial", true, 1),
+  code: initialState("code", false, 0),
+  stock: initialState("stock", false, 0),
+  help: initialState("help", false, 0),
+  explorer: initialState("explorer", false, 0),
 });
 
 export default function WindowProvider({ children }: WindowProviderProps) {
@@ -76,7 +62,14 @@ export default function WindowProvider({ children }: WindowProviderProps) {
       const pos = clampOpenPosition(windowMeta[id], current[id].x, current[id].y);
       return {
         ...current,
-        [id]: { ...current[id], open: true, minimized: false, zIndex, ...pos },
+        [id]: {
+          ...current[id],
+          open: true,
+          minimized: false,
+          maximized: isNarrowScreen(),
+          zIndex,
+          ...pos,
+        },
       };
     });
   };
@@ -113,6 +106,10 @@ export default function WindowProvider({ children }: WindowProviderProps) {
     patchWindow(id, { x, y });
   };
 
+  const resizeWindow = (id: WindowId, width: number, height: number) => {
+    patchWindow(id, { width, height });
+  };
+
   return (
     <WindowContext.Provider
       value={{
@@ -124,6 +121,7 @@ export default function WindowProvider({ children }: WindowProviderProps) {
         restoreWindow,
         focusWindow,
         moveWindow,
+        resizeWindow,
       }}
     >
       {children}

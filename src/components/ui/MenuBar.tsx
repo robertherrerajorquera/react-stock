@@ -14,19 +14,13 @@ export interface Menu {
 
 interface MenuBarProps {
   menus: Menu[];
-  variant?: "app" | "window";
 }
 
-export default function MenuBar({ menus, variant = "window" }: MenuBarProps) {
+export default function MenuBar({ menus }: MenuBarProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const className =
-    variant === "app"
-      ? "win95-menubar win95-menubar--app"
-      : "win95-menubar";
-
   return (
-    <div className={className}>
+    <div className="win95-menubar">
       {openIndex !== null && (
         <div
           className="win95-menubar__backdrop"

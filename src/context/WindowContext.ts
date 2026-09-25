@@ -14,6 +14,8 @@ export interface WindowState {
   zIndex: number;
   x: number;
   y: number;
+  width: number;
+  height: number;
 }
 
 export type WindowsState = Record<WindowId, WindowState>;
@@ -27,6 +29,7 @@ export interface WindowContextValue {
   restoreWindow: (id: WindowId) => void;
   focusWindow: (id: WindowId) => void;
   moveWindow: (id: WindowId, x: number, y: number) => void;
+  resizeWindow: (id: WindowId, width: number, height: number) => void;
 }
 
 export const WindowContext = createContext<WindowContextValue | null>(null);

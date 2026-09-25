@@ -15,7 +15,9 @@ export default function HelpWindow() {
       <ul className="m-0 list-inside list-disc pl-4">
         <li>Doble clic en un icono: abre la ventana</li>
         <li>Arrastra la barra de título: mueve la ventana</li>
-        <li>Botón _: minimiza · □ : maximiza · X : cierra</li>
+        <li>Arrastra desde una esquina: cambia el tamaño</li>
+        <li>Botón _: minimiza (vuela a la barra de tareas)</li>
+        <li>Botón □ : maximiza · Botón X : cierra</li>
       </ul>
     </div>
   );

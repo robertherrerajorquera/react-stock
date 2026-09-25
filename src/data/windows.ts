@@ -60,12 +60,24 @@ export const windowMeta: Record<WindowId, WindowMeta> = {
   },
 };
 
-function getDesktopArea(): { width: number; height: number } {
+export function getDesktopArea(): { width: number; height: number } {
   const desk = document.querySelector<HTMLElement>(".win95-desktop");
   if (desk && desk.clientWidth > 0 && desk.clientHeight > 0) {
     return { width: desk.clientWidth, height: desk.clientHeight };
   }
   return { width: window.innerWidth, height: window.innerHeight };
+}
+
+export function initialSize(
+  meta: WindowMeta
+): { width: number; height: number } {
+  if (typeof window === "undefined") {
+    return { width: meta.width, height: meta.height };
+  }
+  return {
+    width: Math.min(meta.width, window.innerWidth - 8),
+    height: Math.min(meta.height, window.innerHeight - 40),
+  };
 }
 
 export function clampOpenPosition(

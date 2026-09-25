@@ -164,10 +164,6 @@
     user-select: none;
   }
 
-  .win95-menubar--app {
-    z-index: 9995;
-  }
-
   .win95-menubar__backdrop {
     position: fixed;
     inset: 0;
@@ -257,9 +253,9 @@
         var(--win-light);
     padding: 3px;
     min-width: min(220px, calc(100vw - 8px));
-    min-height: min(140px, calc(100vh - 80px));
+    min-height: min(140px, calc(100vh - 40px));
     max-width: calc(100vw - 8px);
-    max-height: calc(100vh - 80px);
+    max-height: calc(100vh - 40px);
     transition:
       width 0.15s ease-out,
       height 0.15s ease-out;
@@ -270,6 +266,148 @@
     height: 100% !important;
     max-width: none;
     max-height: none;
+  }
+
+  .win95-window--resizing,
+  .win95-window--flying {
+    transition: none;
+  }
+
+  .win95-window--flying {
+    pointer-events: none;
+  }
+
+  /* ---------- Redimensionar ventanas ---------- */
+
+  .win95-resize-handle {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    z-index: 4;
+    touch-action: none;
+  }
+
+  .win95-resize-handle--nw {
+    top: 0;
+    left: 0;
+    cursor: nwse-resize;
+  }
+
+  .win95-resize-handle--ne {
+    top: 0;
+    right: 0;
+    cursor: nesw-resize;
+  }
+
+  .win95-resize-handle--sw {
+    bottom: 0;
+    left: 0;
+    cursor: nesw-resize;
+  }
+
+  .win95-resize-handle--se {
+    bottom: 0;
+    right: 0;
+    cursor: nwse-resize;
+  }
+
+  .win95-resize-handle--n {
+    top: 0;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    height: 6px;
+    cursor: ns-resize;
+  }
+
+  .win95-resize-handle--s {
+    bottom: 0;
+    left: 16px;
+    right: 16px;
+    width: auto;
+    height: 6px;
+    cursor: ns-resize;
+  }
+
+  .win95-resize-handle--w {
+    top: 16px;
+    bottom: 16px;
+    left: 0;
+    width: 6px;
+    height: auto;
+    cursor: ew-resize;
+  }
+
+  .win95-resize-handle--e {
+    top: 16px;
+    bottom: 16px;
+    right: 0;
+    width: 6px;
+    height: auto;
+    cursor: ew-resize;
+  }
+
+  .win95-window--maximized .win95-resize-handle {
+    display: none;
+  }
+
+  .win95-quiz {
+    padding-top: 6px;
+    border-top: 1px solid var(--win-dark-gray);
+  }
+
+  .win95-quiz__title {
+    margin: 0 0 4px;
+    font-size: 11px;
+    font-weight: bold;
+  }
+
+  .win95-quiz__question {
+    margin: 0 0 6px;
+    font-size: 11px;
+    font-weight: bold;
+  }
+
+  .win95-quiz__options {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .win95-quiz__option {
+    padding: 3px 6px;
+    font-size: 11px;
+    text-align: left;
+    background: var(--win-white);
+    color: var(--win-black);
+    border-width: 1px;
+    border-style: solid;
+    border-color: var(--win-dark-gray) var(--win-white) var(--win-white)
+      var(--win-dark-gray);
+    cursor: default;
+  }
+
+  .win95-quiz__option[data-selected="true"] {
+    background: var(--win-blue);
+    color: var(--win-white);
+  }
+
+  .win95-quiz__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin-top: 6px;
+  }
+
+  .win95-quiz__feedback {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--win-black);
+  }
+
+  .win95-quiz__feedback--wrong {
+    color: var(--win-error);
   }
 
   /* ---------- Barra de título ---------- */
@@ -284,6 +422,7 @@
     color: var(--win-gray);
     cursor: default;
     user-select: none;
+    touch-action: none;
   }
 
   .win95-titlebar--active {
@@ -306,6 +445,8 @@
   }
 
   .win95-titlebar__controls {
+    position: relative;
+    z-index: 6;
     display: flex;
     gap: 2px;
   }
@@ -467,6 +608,22 @@
   @media (max-width: 720px) {
     .win95-task-button {
       min-width: 78px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .win95-taskbar__clock {
+      display: none;
+    }
+
+    .win95-task-button {
+      min-width: 56px;
+      max-width: 88px;
+      padding: 2px 4px;
+    }
+
+    .win95-start-button {
+      padding: 2px 5px;
     }
   }
 
@@ -636,6 +793,11 @@
     width: 20px;
     font-size: 15px;
     text-align: center;
+  }
+
+  .win95-menu-item__icon svg {
+    display: block;
+    margin: 0 auto;
   }
 
   .win95-menu-separator {

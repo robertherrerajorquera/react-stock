@@ -38,7 +38,27 @@ export default function StartMenu({ onClose }: StartMenuProps) {
         ))}
         <div className="win95-menu-separator" />
         <button type="button" className="win95-menu-item" onClick={onClose}>
-          <span className="win95-menu-item__icon">⏻</span>
+          <span className="win95-menu-item__icon">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 12 12"
+              aria-hidden="true"
+            >
+              <path
+                d="M3.4 3.2 A4.2 4.2 0 1 0 8.6 3.2"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+              />
+              <path
+                d="M6 1.4 V5.6"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+            </svg>
+          </span>
           Apagar...
         </button>
       </div>

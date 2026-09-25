@@ -367,12 +367,12 @@ const handleSubmit = (event: FormEvent) => {
   document.title = \`Productos: \${products.length}\`;
 }, [products]);`,
     application:
-      "StockProvider actualiza el título de la pestaña cada vez que cambia la lista de productos: 'Productos: 3', luego 'Productos: 4'...",
+      "StockProvider hace dos sincronizaciones con el exterior: actualiza el título de la pestaña cada vez que cambia la lista ('Productos: 3', luego 'Productos: 4'...) y guarda los productos en localStorage, así que cerrar y volver a abrir la aplicación conserva el stock.",
     result: {
       window: "stock",
       action: "Probar en Stock Manager",
       description:
-        "Agrega un producto y mira el título de la pestaña del navegador: cambia a 'Productos: 4'.",
+        "Agrega un producto y mira el título de la pestaña del navegador: cambia a 'Productos: 4'. Luego recarga la página: el stock se conserva (localStorage).",
       note: "No lo uses como 'ejecutar código cuando algo cambia' sin más. Es para sincronizar React con el exterior.",
     },
     codeFile: "src/context/StockProvider.tsx",
@@ -409,7 +409,7 @@ interface WindowManagerProps {
       window: "tutorial",
       action: "Ver la cadena de props",
       description:
-        "La lección cambia desde el menú Curso, el Explorador o la ventana Tutorial, pero el dato recorre Desktop → WindowManager → cada ventana.",
+        "La lección cambia desde el Explorador de lecciones o la ventana Tutorial, pero el dato recorre Desktop → WindowManager → cada ventana.",
       note: "Prop drilling no es un pecado: es válido cuando pocos componentes lo atraviesan. El problema aparece cuando muchos componentes no usan la información que transmiten.",
     },
     codeFile: "src/components/windows/WindowManager.tsx",
@@ -686,3 +686,163 @@ export const lessonCategories: LessonCategory[] = [
   "Estado compartido",
   "Arquitectura",
 ];
+
+export interface LessonQuiz {
+  question: string;
+  options: string[];
+  answer: number;
+  explanation: string;
+}
+
+export const lessonQuizzes: Record<string, LessonQuiz> = {
+  jsx: {
+    question: "¿Qué es TSX?",
+    options: [
+      "TypeScript + JSX: JSX dentro de archivos .tsx",
+      "Una librería de estilos para React",
+      "El compilador que convierte HTML en JavaScript",
+    ],
+    answer: 0,
+    explanation:
+      "TSX es JSX dentro de archivos TypeScript, así que puedes anotar tipos mientras escribes interfaz.",
+  },
+  components: {
+    question: "¿Cuándo conviene dividir la interfaz en componentes?",
+    options: [
+      "Cuando ayuda a organizar y reutilizar la interfaz",
+      "Siempre que un archivo pase de 10 líneas",
+      "Nunca: los componentes complican el código",
+    ],
+    answer: 0,
+    explanation:
+      "Dividir no mejora nada por sí solo; se hace para organizar y reutilizar, no por costumbre.",
+  },
+  props: {
+    question: "¿Hacia dónde fluyen las props?",
+    options: [
+      "De padre a hijo, en una sola dirección",
+      "De hijo a padre",
+      "En cualquier dirección, como el estado",
+    ],
+    answer: 0,
+    explanation:
+      "Las props las entrega el padre y el hijo solo las recibe y dibuja; nunca debe modificarlas.",
+  },
+  "use-state": {
+    question: "Al llamar setStock(11), ¿qué ocurre?",
+    options: [
+      "React vuelve a renderizar el componente con el nuevo valor",
+      "Se modifica el nodo del DOM directamente",
+      "El componente se desmonta y se vuelve a montar",
+    ],
+    answer: 0,
+    explanation:
+      "Cambiar el estado provoca un nuevo render: React repinta lo que cambió.",
+  },
+  events: {
+    question: "¿Cuál es la forma correcta de escribir un evento en React?",
+    options: ["onClick (on + mayúscula)", "onclick", "clickOn"],
+    answer: 0,
+    explanation:
+      "React usa on + nombre en camelCase: onClick, onChange, onSubmit.",
+  },
+  lists: {
+    question: "¿Por qué cada fila de un .map() necesita una key?",
+    options: [
+      "Para que React identifique qué elemento cambió",
+      "Para ordenar el array automáticamente",
+      "Porque TypeScript lo exige",
+    ],
+    answer: 0,
+    explanation:
+      "Sin key, React no puede rastrear las filas y repinta de más.",
+  },
+  forms: {
+    question: "¿Qué hace e.preventDefault() en el onSubmit?",
+    options: [
+      "Evita que la página se recargue al enviar el formulario",
+      "Detiene la propagación del evento a otros componentes",
+      "Limpia los campos del formulario",
+    ],
+    answer: 0,
+    explanation:
+      "El comportamiento por defecto del form es recargar la página; preventDefault lo cancela.",
+  },
+  "use-effect": {
+    question: "¿Para qué sirve realmente useEffect?",
+    options: [
+      "Para sincronizar React con sistemas externos (título, localStorage, APIs...)",
+      "Para ejecutar cualquier código cuando algo cambia",
+      "Para modificar el estado de otros componentes",
+    ],
+    answer: 0,
+    explanation:
+      "useEffect sincroniza con el exterior; no es un 'ejecutar cuando quieras'.",
+  },
+  "prop-drilling": {
+    question: "¿Cuándo se convierte el prop drilling en un problema?",
+    options: [
+      "Cuando muchos componentes transmiten datos que no usan",
+      "Cuando la prop atraviesa dos niveles",
+      "Nunca: siempre es preferible a Context",
+    ],
+    answer: 0,
+    explanation:
+      "Pocos niveles está bien; el ruido aparece cuando todos los intermedios pasan datos ajenos.",
+  },
+  context: {
+    question: "¿Qué evita Context?",
+    options: [
+      "Pasar props manualmente por cada nivel del árbol",
+      "Usar useState en los componentes",
+      "Crear componentes pequeños",
+    ],
+    answer: 0,
+    explanation:
+      "El Provider entrega el valor a todos los descendientes sin cadena de props.",
+  },
+  "use-context": {
+    question: "¿Qué devuelve useContext(Context)?",
+    options: [
+      "El valor del Provider más cercano",
+      "Una función para actualizar el contexto",
+      "El estado completo de la aplicación",
+    ],
+    answer: 0,
+    explanation:
+      "useContext lee (no escribe) el valor que el Provider puso en el árbol.",
+  },
+  "context-state": {
+    question: "En Context + useState, ¿dónde vive el estado compartido?",
+    options: [
+      "En el Provider, que expone los datos y las funciones para cambiarlos",
+      "En cada componente que consume el contexto",
+      "En el DOM, dentro de los inputs",
+    ],
+    answer: 0,
+    explanation:
+      "Una sola fuente de verdad en el Provider evita copias que se desincronizan.",
+  },
+  "use-reducer": {
+    question: "¿Qué hace un reducer?",
+    options: [
+      "Recibe el estado actual y una action, y devuelve el nuevo estado",
+      "Modifica el estado anterior en el sitio",
+      "Descarga datos de una API",
+    ],
+    answer: 0,
+    explanation:
+      "Es una función pura: nunca muta el estado, siempre devuelve uno nuevo.",
+  },
+  "context-reducer": {
+    question: "En la arquitectura final de la app, ¿qué recibe cada consumidor?",
+    options: [
+      "{ state, dispatch } desde el Provider",
+      "Una copia de los productos por props",
+      "Un useState distinto por ventana",
+    ],
+    answer: 0,
+    explanation:
+      "Provider con useReducer + consumidores con useContext: estado y transiciones en un solo lugar.",
+  },
+};
