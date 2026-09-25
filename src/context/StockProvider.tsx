@@ -14,10 +14,6 @@ export default function StockProvider({ children }: StockProviderProps) {
   const [state, dispatch] = useReducer(stockReducer, undefined, loadStockState);
 
   useEffect(() => {
-    document.title = `Productos: ${state.products.length}`;
-  }, [state.products]);
-
-  useEffect(() => {
     saveStockProducts(state.products);
   }, [state.products]);
 

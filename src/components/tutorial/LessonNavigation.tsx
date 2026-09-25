@@ -1,16 +1,13 @@
-import { lessons } from "../../data/lessons";
+import { Link } from "react-router-dom";
+import { lessonPath, lessons } from "../../data/lessons";
 
 interface LessonNavigationProps {
   index: number;
-  onChange: (index: number) => void;
 }
 
 const TOTAL_BLOCKS = 16;
 
-export default function LessonNavigation({
-  index,
-  onChange,
-}: LessonNavigationProps) {
+export default function LessonNavigation({ index }: LessonNavigationProps) {
   const total = lessons.length;
   const lesson = lessons[index];
 
@@ -30,22 +27,35 @@ export default function LessonNavigation({
       </div>
 
       <div className="flex items-center justify-between gap-2">
-        <button
-          type="button"
-          className="win95-button"
-          disabled={index === 0}
-          onClick={() => onChange(index - 1)}
-        >
-          ← Anterior
-        </button>
-        <button
-          type="button"
-          className="win95-button"
-          disabled={index === total - 1}
-          onClick={() => onChange(index + 1)}
-        >
-          Siguiente →
-        </button>
+        {index === 0 ? (
+          <button
+            type="button"
+            className="win95-button"
+            disabled
+            aria-disabled="true"
+          >
+            ← Anterior
+          </button>
+        ) : (
+          <Link className="win95-button" to={lessonPath(index - 1)}>
+            ← Anterior
+          </Link>
+        )}
+
+        {index === total - 1 ? (
+          <button
+            type="button"
+            className="win95-button"
+            disabled
+            aria-disabled="true"
+          >
+            Siguiente →
+          </button>
+        ) : (
+          <Link className="win95-button" to={lessonPath(index + 1)}>
+            Siguiente →
+          </Link>
+        )}
       </div>
     </div>
   );

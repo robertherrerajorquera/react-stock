@@ -28,12 +28,7 @@ export default function WindowManager({
   const renderContent = (id: WindowId): ReactNode => {
     switch (id) {
       case "tutorial":
-        return (
-          <TutorialWindow
-            lessonIndex={lessonIndex}
-            onLessonChange={onLessonChange}
-          />
-        );
+        return <TutorialWindow lessonIndex={lessonIndex} />;
       case "code":
         return <CodeEditorWindow lessonIndex={lessonIndex} />;
       case "stock":

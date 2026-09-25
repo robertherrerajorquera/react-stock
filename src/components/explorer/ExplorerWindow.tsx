@@ -1,6 +1,9 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useWindowManager } from "../../hooks/useWindowManager";
 import {
   lessonCategories,
+  lessonPath,
   lessons,
   type LessonCategory,
 } from "../../data/lessons";
@@ -16,6 +19,7 @@ export default function ExplorerWindow({
 }: ExplorerWindowProps) {
   const [collapsed, setCollapsed] = useState<Set<LessonCategory>>(new Set());
   const [selected, setSelected] = useState<number>(lessonIndex);
+  const { openWindow } = useWindowManager();
 
   const toggleFolder = (category: LessonCategory) => {
     setCollapsed((current) => {
@@ -70,19 +74,21 @@ export default function ExplorerWindow({
                   .map((lesson, index) => ({ lesson, index }))
                   .filter(({ lesson }) => lesson.category === category)
                   .map(({ lesson, index }) => (
-                    <button
+                    <Link
                       key={lesson.id}
-                      type="button"
+                      to={lessonPath(index)}
                       className="win95-explorer__row win95-explorer__row--lesson"
                       data-selected={selected === index}
                       data-current={lessonIndex === index}
-                      onClick={() => setSelected(index)}
-                      onDoubleClick={() => handleOpen(index)}
+                      onClick={() => {
+                        setSelected(index);
+                        openWindow("tutorial");
+                      }}
                     >
                       <span className="win95-explorer__twisty" />
                       <span aria-hidden="true">📄</span>
                       {String(index + 1).padStart(2, "0")} — {lesson.title}
-                    </button>
+                    </Link>
                   ))}
             </div>
           );
@@ -91,7 +97,7 @@ export default function ExplorerWindow({
 
       <div className="win95-window__statusbar">
         <span>{lessons.length} lecciones</span>
-        <span>Doble clic para abrir</span>
+        <span>Clic para abrir la lección</span>
       </div>
     </div>
   );

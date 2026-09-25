@@ -1,0 +1,2 @@
+# SPA fallback: cualquier ruta sin archivo estático propio sirve la app.
+/*    /index.html   200

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { StockContext } from "../../context/StockContext";
 import MenuBar, { type Menu } from "../ui/MenuBar";
 import ProductTable from "./ProductTable";
@@ -10,6 +10,17 @@ export default function StockWindow() {
   const [showForm, setShowForm] = useState(false);
 
   const context = useContext(StockContext);
+  const baseTitleRef = useRef(document.title);
+  const products = context?.state.products;
+
+  useEffect(() => {
+    if (products === undefined) return;
+    const baseTitle = baseTitleRef.current;
+    document.title = `Productos: ${products.length}`;
+    return () => {
+      document.title = baseTitle;
+    };
+  }, [products]);
 
   if (context === null) {
     throw new Error("StockWindow debe estar dentro de <StockProvider>");

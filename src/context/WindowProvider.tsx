@@ -1,4 +1,9 @@
-import { useRef, useState, type ReactNode } from "react";
+import {
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type ReactNode,
+} from "react";
 import {
   WindowContext,
   type WindowId,
@@ -21,10 +26,19 @@ const initialPos = (id: WindowId): { x: number; y: number } =>
 const isNarrowScreen = (): boolean =>
   typeof window !== "undefined" && window.innerWidth <= 600;
 
+const subscribeViewport = (onStoreChange: () => void) => {
+  window.addEventListener("resize", onStoreChange);
+  return () => window.removeEventListener("resize", onStoreChange);
+};
+
+const getViewportNarrow = (): boolean => window.innerWidth <= 600;
+
+const getViewportNarrowServer = (): boolean => false;
+
 const initialState = (id: WindowId, open: boolean, zIndex: number) => ({
   open,
   minimized: false,
-  maximized: open && isNarrowScreen(),
+  maximized: false,
   zIndex,
   ...initialPos(id),
   ...initialSize(windowMeta[id]),
@@ -41,6 +55,21 @@ const createInitialWindows = (): WindowsState => ({
 export default function WindowProvider({ children }: WindowProviderProps) {
   const [windows, setWindows] = useState<WindowsState>(createInitialWindows);
   const zCounter = useRef(1);
+  const narrow = useSyncExternalStore(
+    subscribeViewport,
+    getViewportNarrow,
+    getViewportNarrowServer
+  );
+
+  let effectiveWindows = windows;
+  if (narrow) {
+    effectiveWindows = { ...windows };
+    for (const id of Object.keys(windows) as WindowId[]) {
+      if (windows[id].open && !windows[id].maximized) {
+        effectiveWindows[id] = { ...windows[id], maximized: true };
+      }
+    }
+  }
 
   const patchWindow = (id: WindowId, patch: Partial<WindowState>) => {
     setWindows((current) => {
@@ -113,7 +142,7 @@ export default function WindowProvider({ children }: WindowProviderProps) {
   return (
     <WindowContext.Provider
       value={{
-        windows,
+        windows: effectiveWindows,
         openWindow,
         closeWindow,
         minimizeWindow,

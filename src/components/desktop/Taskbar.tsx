@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { useWindowManager } from "../../hooks/useWindowManager";
 import { windowMeta, windowOrder } from "../../data/windows";
 import type { WindowId } from "../../context/WindowContext";
@@ -7,19 +7,28 @@ import StartMenu from "./StartMenu";
 const formatTime = (date: Date) =>
   date.toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" });
 
+let clockValue = "";
+
+const subscribeClock = (onStoreChange: () => void) => {
+  clockValue = formatTime(new Date());
+  onStoreChange();
+  const timer = window.setInterval(() => {
+    clockValue = formatTime(new Date());
+    onStoreChange();
+  }, 10000);
+
+  return () => window.clearInterval(timer);
+};
+
 export default function Taskbar() {
   const { windows, restoreWindow, focusWindow, minimizeWindow } =
     useWindowManager();
   const [startOpen, setStartOpen] = useState(false);
-  const [time, setTime] = useState(() => formatTime(new Date()));
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setTime(formatTime(new Date()));
-    }, 10000);
-
-    return () => window.clearInterval(timer);
-  }, []);
+  const time = useSyncExternalStore(
+    subscribeClock,
+    () => clockValue,
+    () => ""
+  );
 
   const openIds = windowOrder.filter((id) => windows[id].open);
   const topZ = Math.max(
@@ -87,7 +96,9 @@ export default function Taskbar() {
         );
       })}
 
-      <div className="win95-taskbar__clock">{time}</div>
+      <div className="win95-taskbar__clock" suppressHydrationWarning>
+        {time}
+      </div>
 
       {startOpen && <StartMenu onClose={() => setStartOpen(false)} />}
     </div>

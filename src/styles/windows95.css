@@ -71,6 +71,7 @@
   /* ---------- Botón clásico ---------- */
 
   .win95-button {
+    display: inline-block;
     background: var(--win-gray);
     border: 1px solid;
     border-color: var(--win-white) var(--win-black) var(--win-black)
@@ -84,6 +85,7 @@
     cursor: default;
     user-select: none;
     text-align: center;
+    text-decoration: none;
   }
 
   .win95-button:active,
@@ -704,6 +706,7 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-decoration: none;
   }
 
   .win95-explorer__row--lesson {

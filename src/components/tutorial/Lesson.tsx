@@ -15,7 +15,7 @@ export default function Lesson({ lesson }: LessonProps) {
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-baseline justify-between gap-2 border-b border-[#808080] pb-2">
-        <h2 className="m-0 text-[14px] font-bold">{lesson.title}</h2>
+        <h1 className="m-0 text-[14px] font-bold">{lesson.title}</h1>
         <span className="text-[11px] text-[#808080]">{lesson.category}</span>
       </div>
 

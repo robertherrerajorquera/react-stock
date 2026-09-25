@@ -367,7 +367,7 @@ const handleSubmit = (event: FormEvent) => {
   document.title = \`Productos: \${products.length}\`;
 }, [products]);`,
     application:
-      "StockProvider hace dos sincronizaciones con el exterior: actualiza el título de la pestaña cada vez que cambia la lista ('Productos: 3', luego 'Productos: 4'...) y guarda los productos en localStorage, así que cerrar y volver a abrir la aplicación conserva el stock.",
+      "El StockWindow actualiza el título de la pestaña cada vez que cambia la lista ('Productos: 3', luego 'Productos: 4'...), y al cerrarse restaura el título de la página. StockProvider hace la otra sincronización: guarda los productos en localStorage, así que cerrar y volver a abrir la aplicación conserva el stock.",
     result: {
       window: "stock",
       action: "Probar en Stock Manager",
@@ -375,7 +375,7 @@ const handleSubmit = (event: FormEvent) => {
         "Agrega un producto y mira el título de la pestaña del navegador: cambia a 'Productos: 4'. Luego recarga la página: el stock se conserva (localStorage).",
       note: "No lo uses como 'ejecutar código cuando algo cambia' sin más. Es para sincronizar React con el exterior.",
     },
-    codeFile: "src/context/StockProvider.tsx",
+    codeFile: "src/components/stock/StockWindow.tsx",
     code: `useEffect(() => {
   document.title = \`Productos: \${state.products.length}\`;
 }, [state.products]);`,
@@ -846,3 +846,6 @@ export const lessonQuizzes: Record<string, LessonQuiz> = {
       "Provider con useReducer + consumidores con useContext: estado y transiciones en un solo lugar.",
   },
 };
+
+export const lessonPath = (index: number): string =>
+  index <= 0 ? "/" : `/leccion/${lessons[index]?.id ?? lessons[0].id}`;
