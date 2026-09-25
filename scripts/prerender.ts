@@ -9,17 +9,10 @@ import { lessons } from "../src/data/lessons";
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = path.join(ROOT, "dist");
 
-// ⚠️ SITE_URL: cámbiala (o define la variable de entorno SITE_URL) por tu dominio
-// real antes de publicar. Canonical, Open Graph y sitemap salen de aquí.
-const SITE_URL = (process.env.SITE_URL ?? "https://react-stock-lab.example.com")
+// SITE_URL: dominio real de producción (Vercel). Se puede sobrescribir con la
+// variable de entorno SITE_URL. Canonical, Open Graph y sitemap salen de aquí.
+const SITE_URL = (process.env.SITE_URL ?? "https://react-stock-amber.vercel.app")
   .replace(/\/+$/, "");
-
-if (!process.env.SITE_URL) {
-  console.warn(
-    "[prerender] ⚠ SITE_URL no definida: se usa el placeholder. " +
-      "Define SITE_URL=https://tudominio.com antes de publicar."
-  );
-}
 
 interface PageMeta {
   route: string;
