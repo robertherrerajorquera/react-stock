@@ -13,6 +13,11 @@ export interface LessonResult {
   note?: string;
 }
 
+export interface LessonReference {
+  label: string;
+  url: string;
+}
+
 export interface LessonData {
   id: string;
   title: string;
@@ -25,6 +30,7 @@ export interface LessonData {
   result: LessonResult;
   codeFile: string;
   code: string;
+  references: LessonReference[];
 }
 
 export const lessons: LessonData[] = [
@@ -32,6 +38,11 @@ export const lessons: LessonData[] = [
     id: "jsx",
     title: "JSX y TSX",
     category: "Fundamentos",
+    references: [
+      { label: "Writing markup with JSX (react.dev)", url: "https://react.dev/learn/writing-markup-with-jsx" },
+      { label: "JavaScript in JSX with curly braces (react.dev)", url: "https://react.dev/learn/javascript-in-jsx-with-curly-braces" },
+      { label: "JSX (TypeScript Handbook)", url: "https://www.typescriptlang.org/docs/handbook/jsx.html" },
+    ],
     concept:
       "JSX es una extensión de sintaxis que permite escribir estructuras parecidas a HTML dentro de JavaScript. React transforma cada elemento JSX en una llamada a función que crea un elemento de la interfaz. Este proyecto usa TSX: JSX dentro de archivos TypeScript (.tsx), así que cada ejemplo puede llevar anotaciones de tipos.",
     problem:
@@ -77,6 +88,10 @@ function ProductRow({ product }: ProductRowProps) {
     id: "components",
     title: "Componentes",
     category: "Fundamentos",
+    references: [
+      { label: "Your First Component (react.dev)", url: "https://react.dev/learn/your-first-component" },
+      { label: "Importing and Exporting Components (react.dev)", url: "https://react.dev/learn/importing-and-exporting-components" },
+    ],
     concept:
       "Un componente es una función que devuelve JSX y representa una pieza reutilizable de la interfaz. Se usa como una etiqueta: <NombreComponente />. En este proyecto las funciones viven en archivos .tsx y pueden llevar tipos de TypeScript.",
     problem:
@@ -129,6 +144,10 @@ export default function ProductRow({
     id: "props",
     title: "Props",
     category: "Fundamentos",
+    references: [
+      { label: "Passing Props to a Component (react.dev)", url: "https://react.dev/learn/passing-props-to-a-component" },
+      { label: "Conditional Rendering (react.dev)", url: "https://react.dev/learn/conditional-rendering" },
+    ],
     concept:
       "Las props son la información que un componente padre le pasa a un componente hijo. Son el argumento de la etiqueta JSX y el hijo no las modifica: las recibe y las dibuja. Con TypeScript se declaran en una interface que el componente exige.",
     problem:
@@ -176,6 +195,10 @@ function ProductRow({ product }: ProductRowProps) {
     id: "use-state",
     title: "useState",
     category: "Estado",
+    references: [
+      { label: "State: A Component's Memory (react.dev)", url: "https://react.dev/learn/state-a-components-memory" },
+      { label: "useState — referencia (react.dev)", url: "https://react.dev/reference/react/useState" },
+    ],
     concept:
       "useState permite que un componente recuerde información entre renders y la actualice. Devuelve el valor actual y una función para cambiarlo; al cambiarlo, React vuelve a renderizar el componente.",
     problem:
@@ -218,6 +241,10 @@ const [stock, setStock] = useState<number>(product.stock);
     id: "events",
     title: "Eventos",
     category: "Estado",
+    references: [
+      { label: "Responding to Events (react.dev)", url: "https://react.dev/learn/responding-to-events" },
+      { label: "Queueing a Series of State Updates (react.dev)", url: "https://react.dev/learn/queueing-a-series-of-state-updates" },
+    ],
     concept:
       "React permite responder a las acciones del usuario con funciones en formato onNombre: onClick (clic), onChange (cambio en un input) y onSubmit (envío de formulario).",
     problem:
@@ -257,6 +284,10 @@ const [stock, setStock] = useState<number>(product.stock);
     id: "lists",
     title: "Listas",
     category: "Estado",
+    references: [
+      { label: "Rendering Lists (react.dev)", url: "https://react.dev/learn/rendering-lists" },
+      { label: "Updating Arrays in State (react.dev)", url: "https://react.dev/learn/updating-arrays-in-state" },
+    ],
     concept:
       "Los datos llegan como arrays y React los convierte en elementos con .map(). Cada elemento necesita una key única (normalmente el id) para que React identifique qué fila cambió.",
     problem:
@@ -295,6 +326,10 @@ nombres.map((nombre: string, i: number) => (
     id: "forms",
     title: "Formularios",
     category: "Estado",
+    references: [
+      { label: "Reacting to Input with State (react.dev)", url: "https://react.dev/learn/reacting-to-input-with-state" },
+      { label: "<input> — referencia (react.dev)", url: "https://react.dev/reference/react-dom/components/input" },
+    ],
     concept:
       "Los inputs controlados son inputs cuyo valor viene del estado: value apunta al estado y onChange lo actualiza. El formulario se maneja con onSubmit y e.preventDefault().",
     problem:
@@ -355,6 +390,11 @@ const handleSubmit = (event: FormEvent) => {
     id: "use-effect",
     title: "useEffect",
     category: "Estado",
+    references: [
+      { label: "Synchronizing with Effects (react.dev)", url: "https://react.dev/learn/synchronizing-with-effects" },
+      { label: "useEffect — referencia (react.dev)", url: "https://react.dev/reference/react/useEffect" },
+      { label: "Rules of Hooks (react.dev)", url: "https://react.dev/reference/rules/rules-of-hooks" },
+    ],
     concept:
       "useEffect ejecuta código después del render cuando cambian sus dependencias. Su propósito real es sincronizar el componente con sistemas externos: el título de la pestaña, localStorage, una API, un temporizador o un event listener.",
     problem:
@@ -384,6 +424,10 @@ const handleSubmit = (event: FormEvent) => {
     id: "prop-drilling",
     title: "Prop Drilling",
     category: "Estado compartido",
+    references: [
+      { label: "Sharing State Between Components (react.dev)", url: "https://react.dev/learn/sharing-state-between-components" },
+      { label: "Passing Data Deeply with Context (react.dev)", url: "https://react.dev/learn/passing-data-deeply-with-context" },
+    ],
     concept:
       "Prop drilling es pasar una prop a través de componentes intermedios que no la usan, solo para que llegue a uno que sí la necesita.",
     problem:
@@ -431,6 +475,10 @@ const [lessonIndex, setLessonIndex] = useState<number>(0);
     id: "context",
     title: "Context",
     category: "Estado compartido",
+    references: [
+      { label: "Passing Data Deeply with Context (react.dev)", url: "https://react.dev/learn/passing-data-deeply-with-context" },
+      { label: "createContext — referencia (react.dev)", url: "https://react.dev/reference/react/createContext" },
+    ],
     concept:
       "Context permite compartir información con todos los componentes descendientes sin pasar props manualmente por cada nivel. Se crea con createContext y se entrega con un Provider.",
     problem:
@@ -487,6 +535,10 @@ const WindowContext = createContext<WindowContextValue | null>(null);
     id: "use-context",
     title: "useContext",
     category: "Estado compartido",
+    references: [
+      { label: "useContext — referencia (react.dev)", url: "https://react.dev/reference/react/useContext" },
+      { label: "Passing Data Deeply with Context (react.dev)", url: "https://react.dev/learn/passing-data-deeply-with-context" },
+    ],
     concept:
       "useContext permite consumir un Context desde cualquier componente. Devuelve el valor del Provider más cercano. Son tres piezas: createContext → Provider → useContext.",
     problem:
@@ -526,6 +578,10 @@ export default function StockSummary() {
     id: "context-state",
     title: "Context + useState",
     category: "Estado compartido",
+    references: [
+      { label: "Passing Data Deeply with Context (react.dev)", url: "https://react.dev/learn/passing-data-deeply-with-context" },
+      { label: "State: A Component's Memory (react.dev)", url: "https://react.dev/learn/state-a-components-memory" },
+    ],
     concept:
       "El Provider no solo comparte datos: puede guardar el estado y exponer las funciones que lo modifican. Así el estado compartido vive en un único lugar y todos consumen la misma fuente.",
     problem:
@@ -568,6 +624,10 @@ const [state, dispatch] = useReducer(stockReducer, initialState);`,
     id: "use-reducer",
     title: "useReducer",
     category: "Arquitectura",
+    references: [
+      { label: "Extracting State Logic into a Reducer (react.dev)", url: "https://react.dev/learn/extracting-state-logic-into-a-reducer" },
+      { label: "useReducer — referencia (react.dev)", url: "https://react.dev/reference/react/useReducer" },
+    ],
     concept:
       "useReducer centraliza las actualizaciones de un estado complejo en una función pura llamada reducer. Recibe el estado actual y una action, y devuelve el nuevo estado.",
     problem:
@@ -635,6 +695,10 @@ function reducer(state: State, action: Action) {
     id: "context-reducer",
     title: "Context + useReducer",
     category: "Arquitectura",
+    references: [
+      { label: "Scaling Up with Reducer and Context (react.dev)", url: "https://react.dev/learn/scaling-up-with-reducer-and-context" },
+      { label: "useContext — referencia (react.dev)", url: "https://react.dev/reference/react/useContext" },
+    ],
     concept:
       "La combinación final: el Provider guarda el resultado de useReducer y expone { state, dispatch } a todo el árbol. Estado compartido y transiciones centralizadas en un solo lugar.",
     problem:
