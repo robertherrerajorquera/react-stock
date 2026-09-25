@@ -14,6 +14,28 @@ const DIST = path.join(ROOT, "dist");
 const SITE_URL = (process.env.SITE_URL ?? "https://react-stock-amber.vercel.app")
   .replace(/\/+$/, "");
 
+// En el contenedor de build de Vercel el Chrome estándar no arranca (faltan
+// librerías de sistema como libnspr4). Ahí usamos @sparticuz/chromium, que
+// trae su propio binario con las libs estáticas para Linux serverless.
+const IS_VERCEL = Boolean(process.env.VERCEL);
+
+const launchBrowser = async (): Promise<Browser> => {
+  if (!IS_VERCEL) {
+    return puppeteer.launch({ headless: true });
+  }
+
+  // @sparticuz/chromium trae su propio `headless_shell` de Linux con las
+  // librerías que faltan en el contenedor de Vercel; al importarse detecta
+  // VERCEL (Node ≥20) y monta LD_LIBRARY_PATH/FONTCONFIG_PATH solo.
+  const { default: chromium } = await import("@sparticuz/chromium");
+  console.log("[prerender] modo Vercel: usando @sparticuz/chromium (headless_shell)");
+  return puppeteer.launch({
+    args: await puppeteer.defaultArgs({ args: chromium.args, headless: "shell" }),
+    executablePath: await chromium.executablePath(),
+    headless: "shell",
+  });
+};
+
 interface PageMeta {
   route: string;
   title: string;
@@ -165,9 +187,10 @@ const renderOgImage = async (browser: Browser): Promise<void> => {
 const main = async () => {
   const metas = buildMetas();
   const { server, origin } = await startServer();
-  const browser = await puppeteer.launch({ headless: true });
+  let browser: Browser | null = null;
 
   try {
+    browser = await launchBrowser();
     const page = await browser.newPage();
     await page.setViewport({ width: 1280, height: 800 });
 
@@ -286,12 +309,33 @@ ${metas
       `[prerender] listo: ${metas.length} páginas + sitemap.xml + robots.txt + og.png`
     );
   } finally {
-    await browser.close();
+    if (browser) await browser.close();
     server.close();
   }
 };
 
+// Diseño defensivo para CI: el prerender jamás debe tumbar un despliegue.
+// Si falla o se cuelga, el build continúa como SPA pura (sin SEO en ese deploy)
+// y el aviso en el log lo hace visible.
+const WATCHDOG_MS = 240_000;
+const watchdog = setTimeout(() => {
+  console.warn(
+    `[prerender] ⚠ tiempo máximo (${WATCHDOG_MS / 1000}s) excedido: se omite el prerender.` +
+      (IS_VERCEL ? " El deploy continúa sin SEO (SPA pura)." : "")
+  );
+  process.exit(IS_VERCEL ? 0 : 1);
+}, WATCHDOG_MS);
+watchdog.unref();
+
 main().catch((error) => {
   console.error("[prerender] error:", error);
-  process.exitCode = 1;
+  if (IS_VERCEL) {
+    console.warn(
+      "[prerender] ⚠ falló el prerender en Vercel: el deploy continúa SIN SEO (SPA pura). " +
+        "Revisa este log, corrige y vuelve a desplegar."
+    );
+    process.exitCode = 0;
+  } else {
+    process.exitCode = 1;
+  }
 });
