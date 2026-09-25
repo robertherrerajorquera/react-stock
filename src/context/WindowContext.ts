@@ -5,7 +5,8 @@ export type WindowId =
   | "code"
   | "stock"
   | "help"
-  | "explorer";
+  | "explorer"
+  | "shutdown";
 
 export interface WindowState {
   open: boolean;

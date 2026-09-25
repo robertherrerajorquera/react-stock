@@ -6,6 +6,7 @@ import CodeEditorWindow from "../code/CodeEditorWindow";
 import StockWindow from "../stock/StockWindow";
 import HelpWindow from "../help/HelpWindow";
 import ExplorerWindow from "../explorer/ExplorerWindow";
+import ShutdownWindow from "../shutdown/ShutdownWindow";
 import { useWindowManager } from "../../hooks/useWindowManager";
 import { windowOrder } from "../../data/windows";
 import type { WindowId } from "../../context/WindowContext";
@@ -42,6 +43,8 @@ export default function WindowManager({
             onLessonChange={onLessonChange}
           />
         );
+      case "shutdown":
+        return <ShutdownWindow />;
       default:
         return null;
     }

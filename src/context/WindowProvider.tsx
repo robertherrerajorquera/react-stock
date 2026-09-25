@@ -50,6 +50,7 @@ const createInitialWindows = (): WindowsState => ({
   stock: initialState("stock", false, 0),
   help: initialState("help", false, 0),
   explorer: initialState("explorer", false, 0),
+  shutdown: initialState("shutdown", false, 0),
 });
 
 export default function WindowProvider({ children }: WindowProviderProps) {

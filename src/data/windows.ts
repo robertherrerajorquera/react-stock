@@ -15,6 +15,7 @@ export const windowOrder: WindowId[] = [
   "stock",
   "help",
   "explorer",
+  "shutdown",
 ];
 
 export const windowMeta: Record<WindowId, WindowMeta> = {
@@ -57,6 +58,14 @@ export const windowMeta: Record<WindowId, WindowMeta> = {
     y: 48,
     width: 280,
     height: 430,
+  },
+  shutdown: {
+    title: "Apagar el equipo",
+    icon: "🔌",
+    x: 470,
+    y: 210,
+    width: 360,
+    height: 190,
   },
 };
 

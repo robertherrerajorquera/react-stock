@@ -21,6 +21,11 @@ export default function StartMenu({ onClose }: StartMenuProps) {
     onClose();
   };
 
+  const handleShutdown = () => {
+    openWindow("shutdown");
+    onClose();
+  };
+
   return (
     <div className="win95-start-menu">
       <div className="win95-start-menu__sidebar">React Stock Lab</div>
@@ -37,7 +42,11 @@ export default function StartMenu({ onClose }: StartMenuProps) {
           </button>
         ))}
         <div className="win95-menu-separator" />
-        <button type="button" className="win95-menu-item" onClick={onClose}>
+        <button
+          type="button"
+          className="win95-menu-item"
+          onClick={handleShutdown}
+        >
           <span className="win95-menu-item__icon">
             <svg
               width="12"
